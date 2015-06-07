@@ -22,15 +22,26 @@ def option_parser args
 end
 
 def set_alias args
-  puts "Setting alias"
+  if args.length != 2
+    puts "Sclam : Invalid Argument Length, -h will print help."
+  else
+  end  
 end
 
 def run_alias args
-  puts "Running alias"
+  if args.length != 1
+    puts "Sclam : Invalid Argument Length, -h will print help."
+  else
+  end
 end
 
 def print_help
-  puts "Help"
+  help_str = <<-EOS
+  Sclam : Usage
+  sclam --set ALIAS COMMAND - sets the ALIAS for the given COMMAND
+  sclam --run ALIAS         - run the already set ALIAS
+  EOS
+  puts help_str
 end
 
 def print_version
