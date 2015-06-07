@@ -13,6 +13,10 @@ def option_parser args
     set_alias args
   when '-r', '--run'
     run_alias args
+  when '-l', '--list'
+    list_alias
+  when '-d', '--del'
+    del_alias args   
   when '-h', '--help'
     print_help
   when '-v', '--version'
@@ -44,16 +48,47 @@ def run_alias args
     # read the alias json from sclam file
     alias_hash = read_json LOCAL_SCLAM_FILE
 
-    # replace the sclam process by the command to be executed
-    exec alias_hash[args[0]]
+    if alias_hash[args[0]].nil?
+      puts "No alias found : #{args[0]}, Use -s to set one first. -h will print help"
+    else
+      # replace the sclam process by the command to be executed  
+      exec alias_hash[args[0]]
+    end  
   end
 end
+
+def list_alias
+  # read the alias json from sclam file
+  alias_hash = read_json LOCAL_SCLAM_FILE
+
+  # print all the alias stored in the json
+  alias_hash.each do |k, v|
+    puts "#{k}       -> #{v}"
+  end  
+end  
+
+def del_alias args
+  if args.length != 1
+    puts "Sclam : Invalid Argument Length, -h will print help."
+  else
+    # read the alias json from sclam file
+    alias_hash = read_json LOCAL_SCLAM_FILE
+
+    # delete the given alias from json
+    alias_hash.delete args[0]
+
+    # write back the json
+    write_json LOCAL_SCLAM_FILE, alias_hash
+  end  
+end  
 
 def print_help
   help_str = <<-EOS
   Sclam : Usage
-  sclam --set ALIAS COMMAND - sets the ALIAS for the given COMMAND
-  sclam --run ALIAS         - run the already set ALIAS
+  sclam -s, --set ALIAS COMMAND - sets the ALIAS for the given COMMAND
+  sclam -r, --run ALIAS         - run the already set ALIAS
+  sclam -l, --list              - list all alias set till now
+  sclam -d, --del ALIAS         - delete ALIAS
   EOS
   puts help_str
 end
