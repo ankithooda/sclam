@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 
-require 'yaml'
+require 'json'
 
+# Currently only local sclam file will be used
 GLOBAL_SCLAM_FILE = '~/.sclam'
 LOCAL_SCLAM_FILE = './.sclam'
 
@@ -25,6 +26,14 @@ def set_alias args
   if args.length != 2
     puts "Sclam : Invalid Argument Length, -h will print help."
   else
+    # read the already written aliases from the json file
+    alias_hash = read_json LOCAL_SCLAM_FILE
+
+    # just setting the ALIAS for the COMMAND, it will overwrite previous set alias
+    alias_hash[args[0]] = args[1]
+
+    # write back the json
+    write_json LOCAL_SCLAM_FILE, alias_hash 
   end  
 end
 
@@ -32,6 +41,11 @@ def run_alias args
   if args.length != 1
     puts "Sclam : Invalid Argument Length, -h will print help."
   else
+    # read the alias json from sclam file
+    alias_hash = read_json LOCAL_SCLAM_FILE
+
+    # replace the sclam process by the command to be executed
+    exec alias_hash[args[0]]
   end
 end
 
@@ -48,6 +62,20 @@ def print_version
   puts "Sclam 0.0.1"
 end
 
+def write_json file_name, hash
+  File.open(file_name,"w") do |f|
+    f.write(hash.to_json)
+  end
+end
+
+def read_json file_name
+  begin
+    JSON.parse( IO.read(file_name) )
+  rescue Errno::ENOENT
+    # return empty hash if .sclam has not been created
+    {}
+  end  
+end
 
 def main
   option_parser ARGV
