@@ -4,11 +4,14 @@ Smart Command Line Alias Manager
 
 Usage
 
-    sclam --set ALIAS COMMAND
-  
-    sclam --run ALIAS
-  
-    sclam --list
-  
-    sclam --del ALIAS
+    sclam --set|-s ALIAS COMMAND
 
+    sclam --run|-r ALIAS
+
+    sclam --list|-l
+
+    sclam --del|-d ALIAS
+
+    sclam --help|-h
+
+    sclam --version|-v
