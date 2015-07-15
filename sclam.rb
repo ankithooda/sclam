@@ -87,6 +87,8 @@ def print_help
   sclam -r, --run ALIAS         - run the already set ALIAS
   sclam -l, --list              - list all alias set till now
   sclam -d, --del ALIAS         - delete ALIAS
+  sclam -h, --help              - print this help
+  sclam -v, --version           - prints the version
   EOS
   puts help_str
 end
@@ -96,7 +98,11 @@ def print_version
 end
 
 def write_json file_name, hash
-  File.open(file_name,"w") do |f|
+  # if sclam file does not exists create it
+  if !File.file? file_name
+    File.new file_name, 'w'
+  end
+  File.open(file_name,'w') do |f|
     f.write(hash.to_json)
   end
 end
